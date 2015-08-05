@@ -20,7 +20,7 @@ internals.Person.save = function(person){
 };
 
 internals.Person.prototype.save = function(){
-	var _this = this;
+	var _this = this;	
 	
 	return new Promise(function(resolve, reject){
 		
