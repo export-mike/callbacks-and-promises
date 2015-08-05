@@ -1,5 +1,9 @@
 'use strict';
+var Q = require('q');
 var fs = require('fs');
+
+var readFile = Q.nfbind(fs.readFile);
+var writeFile = Q.nfbind(fs.writeFile);
 
 var internals = {};
 
@@ -11,30 +15,41 @@ module.exports = internals.Person = function(options){
 	this.location = options.location;
 };
 
-internals.Person.save = function(person, callback){
-	return new internals.Person(person).save(callback);
+internals.Person.save = function(person){
+	return new internals.Person(person).save();
 };
 
-internals.Person.prototype.save = function(callback){
+internals.Person.prototype.save = function(){
 	var _this = this;
-	fs.writeFile('./'+this.name+'.json', JSON.stringify(this), function(err){
-		if(err){
-			return callback(err);
-		}
+	
+	return new Promise(function(resolve, reject){
+		
+		return writeFile('./'+_this.name+'.json', JSON.stringify(_this))
+		.then(function(){
+			resolve(_this);
+		})
+		.catch(function(err){
+			reject(err);
+		});
 
-		callback(null, _this);
 	});
 };
 
 internals.Person.get = function(name, callback){
-	fs.readFile('./'+name+'.json', {encoding:'utf-8'}, function(err, data){
-		var personData;
-		try{
-			personData = JSON.parse(data);
-		}
-		catch(e){
-			return callback(e);
-		}
-		callback(null, new internals.Person(personData));
+	
+	return new Promise(function(resolve, reject){
+
+		readFile('./'+name+'.json', {encoding:'utf-8'})
+		.then(function(data){
+			var personData;
+			try{
+				personData = JSON.parse(data);
+			}
+			catch(e){
+				return reject(e);
+			}
+			resolve(new internals.Person(personData));
+		});
+
 	});
 };

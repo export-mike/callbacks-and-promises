@@ -1,0 +1,15 @@
+{
+  "name": "@mikeljames/promises",
+  "version": "1.0.0",
+  "description": "",
+  "main": "promises.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@atomiq/promisify": "0.0.4",
+    "q": "^1.4.1"
+  }
+}
